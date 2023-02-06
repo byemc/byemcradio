@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>byemc radio</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    
+    <h1>byemc radio</h1>
+    <p>live feed: <audio src="https://radioman.byemc.live:8000/radio.mp3" controls></audio></p>
+    <h2>now playing</h2>
+    <img src="" alt="" id="currentart">
+    <p id="nowplaying">loading....</p>
+    <p id="lastplayed"></p>
+    <p id="nextsong"></p>
+    <br>
+    <p id="listening"></p>
+
+    <script>
+
+        const stationURL = "https://radio.byemc.live/api/nowplaying_static/byemc_live.json"
+
+        let pingStation = () => {
+            fetch(stationURL)
+            .then(response => response.json())
+            .then(data => {
+
+                if (!data.is_online) {
+
+                    document.getElementById("nowplaying").innerHTML = "station is offline";
+                    document.getElementById("currentart").hidden = true;
+                    document.getElementById("lastplayed").hidden = true;
+                    document.getElementById("nextsong").hidden = true;
+                    document.getElementById("listening").hidden = true;
+                    return
+                }
+
+                if (document.getElementById("currentart").hidden) {
+                    document.getElementById("currentart").hidden = false;
+                    document.getElementById("lastplayed").hidden = false;
+                    document.getElementById("nextsong").hidden = false;
+                    document.getElementById("listening").hidden = false;
+                }
+
+                console.log(data)
+                document.getElementById("currentart").src = data.now_playing.song.art
+                document.getElementById("nowplaying").innerHTML = `${data.now_playing.song.title} by ${data.now_playing.song.artist}`
+                let last_song = data.song_history[0]
+                document.getElementById("lastplayed").innerHTML = `last played: ${last_song.song.title} by ${last_song.song.artist}`
+                document.getElementById("nextsong").innerHTML = `playing next: ${data.playing_next.song.title} by ${data.playing_next.song.artist}`
+                document.getElementById("listening").innerHTML = `listeners: ${data.listeners.total}`
+            })
+        }
+
+        pingStation()
+        
+    </script>
+</body>
+</html>

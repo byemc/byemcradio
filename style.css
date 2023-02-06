@@ -1,0 +1,10 @@
+
+html {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#currentart {
+    float:left;
+    padding-right: 5px;
+}
